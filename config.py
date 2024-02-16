@@ -1,4 +1,4 @@
-import re 
+from pyrogram import Client
 
 API_ID = 
 API_HASH = ""
