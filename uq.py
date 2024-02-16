@@ -9,38 +9,40 @@ api_credentials_list = [
     # Add more sets of API credentials as needed
 ]
 
-# Dictionary to store chat ID for each user
 user_chat_ids = {}
 
-# Function to handle the /delay command
-def delay_command_handler(client: Client, message: Message, api_credentials):
-    if message.from_user and message.from_user.is_member:
-        try:
-            command_parts = message.text.split(" ")
-            if len(command_parts) >= 4:
-                _, _, text_to_send, seconds_str, times_str = command_parts
-                seconds = int(seconds_str)
-                times = int(times_str)
+def create_client(api_credentials):
+    app = Client(f"user_session_{api_credentials['api_id']}", **api_credentials)
 
-                # Store chat ID for the user
-                user_chat_ids[message.from_user.id] = message.chat.id
+    @app.on_message(filters.command("delay", prefixes="/"))
+    def delay_command_handler(client: Client, message: Message):
+        if message.from_user and message.from_user.is_member:
+            try:
+                command_parts = message.text.split(" ")
+                if len(command_parts) >= 4:
+                    _, _, text_to_send, seconds_str, times_str = command_parts
+                    seconds = int(seconds_str)
+                    times = int(times_str)
 
-                for _ in range(times):
-                    time.sleep(seconds)
-                    # Use stored chat ID and current API credentials to reply
-                    with Client(f"user_session_{api_credentials['api_id']}", **api_credentials) as temp_client:
-                        temp_client.send_message(user_chat_ids[message.from_user.id], text_to_send)
+                    # Store chat ID for the user
+                    user_chat_ids[message.from_user.id] = message.chat.id
 
-            else:
-                message.reply_text("Invalid command format. Use /delay <text_to_send> <seconds> <times>")
-        except Exception as e:
-            print(f"Error: {str(e)}")
-            message.reply_text("An error occurred while processing the command.")
-    else:
-        message.reply_text("You need to be a member of the chat to use this command.")
+                    for _ in range(times):
+                        time.sleep(seconds)
+                        # Use stored chat ID and current API credentials to reply
+                        client.send_message(user_chat_ids[message.from_user.id], text_to_send)
+
+                else:
+                    message.reply_text("Invalid command format. Use /delay <text_to_send> <seconds> <times>")
+            except Exception as e:
+                print(f"Error: {str(e)}")
+                message.reply_text("An error occurred while processing the command.")
+        else:
+            message.reply_text("You need to be a member of the chat to use this command.")
+
+    return app
 
 # Iterate over each set of API credentials and run the client
 for api_credentials in api_credentials_list:
-    app = Client(f"user_session_{api_credentials['api_id']}", **api_credentials)
-    app.add_message_handler(delay_command_handler, filters.command("delay", prefixes="/"))
-    app.run()
+    client = create_client(api_credentials)
+    client.run()
