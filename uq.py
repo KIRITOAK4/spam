@@ -1,9 +1,6 @@
 from pyrogram import Client, filters
 import asyncio
-
-API_ID = ""
-API_HASH = ""
-SESSION_STRING = ""
+from Config import *
 
 app = Client("user_session", api_id=API_ID, api_hash=API_HASH, session_string=SESSION_STRING)
 
