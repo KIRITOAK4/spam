@@ -1,1 +1,1 @@
-python uq.py
+Python uq.py
