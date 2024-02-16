@@ -19,7 +19,7 @@ def create_client(api_credentials):
         try:
             command_parts = message.text.split(" ")
             if len(command_parts) >= 4:
-                _, command_to_send, seconds_str, times_str = command_parts
+                _, text_to_send, seconds_str, times_str = command_parts
                 seconds = int(seconds_str)
                 times = int(times_str)
 
