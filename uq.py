@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import Message
-import time
+import time, schedule
 
 # List of dictionaries containing API credentials
 api_credentials_list = [
