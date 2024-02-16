@@ -2,16 +2,18 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 import time
 
-API_ID = "your_api_id"
-API_HASH = "your_api_hash"
-
-app = Client("user_session", api_id=API_ID, api_hash=API_HASH)
+# List of dictionaries containing API credentials
+api_credentials_list = [
+    {"api_id": "14712540" , "api_hash": "e61b996dc037d969a4f8cf6411bb6165"},
+    {"api_id": "15356238", "api_hash": "9af2a934037de907d317abc8ad049c36"},
+    # Add more sets of API credentials as needed
+]
 
 # Dictionary to store chat ID for each user
 user_chat_ids = {}
 
-@app.on_message(filters.command("delay", prefixes="/"))
-def delay_command_handler(client: Client, message: Message):
+# Function to handle the /delay command
+def delay_command_handler(client: Client, message: Message, api_credentials):
     if message.from_user and message.from_user.is_member:
         try:
             command_parts = message.text.split(" ")
@@ -25,8 +27,9 @@ def delay_command_handler(client: Client, message: Message):
 
                 for _ in range(times):
                     time.sleep(seconds)
-                    # Use stored chat ID to reply
-                    client.send_message(user_chat_ids[message.from_user.id], text_to_send)
+                    # Use stored chat ID and current API credentials to reply
+                    with Client(f"user_session_{api_credentials['api_id']}", **api_credentials) as temp_client:
+                        temp_client.send_message(user_chat_ids[message.from_user.id], text_to_send)
 
             else:
                 message.reply_text("Invalid command format. Use /delay <text_to_send> <seconds> <times>")
@@ -36,4 +39,8 @@ def delay_command_handler(client: Client, message: Message):
     else:
         message.reply_text("You need to be a member of the chat to use this command.")
 
-app.run()
+# Iterate over each set of API credentials and run the client
+for api_credentials in api_credentials_list:
+    app = Client(f"user_session_{api_credentials['api_id']}", **api_credentials)
+    app.add_message_handler(delay_command_handler, filters.command("delay", prefixes="/"))
+    app.run()
