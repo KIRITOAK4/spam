@@ -1,1 +1,1 @@
-Python uq.py
+worker: python uq.py
