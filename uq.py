@@ -1,57 +1,26 @@
 from pyrogram import Client, filters
-from pyrogram.types import Message
-import time, schedule
+import asyncio
 
-# List of dictionaries containing API credentials
-api_credentials_list = [
-    {"api_id": "14712540" , "api_hash": "e61b996dc037d969a4f8cf6411bb6165"},
-    {"api_id": "15356238", "api_hash": "9af2a934037de907d317abc8ad049c36"},
-    # Add more sets of API credentials as needed
-]
+API_ID = "14712540"
+API_HASH = "e61b996dc037d969a4f8cf6411bb6165"
 
-user_messages = {}
+app = Client("user_session", api_id=API_ID, api_hash=API_HASH)
 
-def create_client(api_credentials):
-    app = Client(f"user_session_{api_credentials['api_id']}", **api_credentials)
+@app.on_message(filters.command("delayspam", prefixes="/"))
+async def delayspam_command_handler(client, message):
+    try:
+        command_parts = message.text.split(" ", 3)
+        delay = float(command_parts[1])
+        count = int(command_parts[2])
+        msg = str(command_parts[3])
+    except (IndexError, ValueError):
+        return await message.reply_text(f"**Usage :** /delayspam <delay time> <count> <msg>")
 
-    @app.on_message(filters.command("delay", prefixes="/"))
-    def delay_command_handler(client: Client, message: Message):
-        try:
-            command_parts = message.text.split(" ")
-            if len(command_parts) >= 4:
-                _, text_to_send, seconds_str, times_str = command_parts
-                seconds = int(seconds_str)
-                times = int(times_str)
+    try:
+        for i in range(count):
+            await message.reply_text(msg)
+            await asyncio.sleep(delay)
+    except Exception as u:
+        await message.reply_text(f"**Error :** `{u}`")
 
-                # Store chat ID and text message for the user
-                user_messages[message.chat.id] = {"text": text_to_send, "times": times}
-
-                message.reply_text(f"Delayed message stored. It will be sent {times} times after {seconds} seconds.")
-            else:
-                message.reply_text("Invalid command format. Use /delay <text_to_send> <seconds> <times>")
-        except Exception as e:
-            print(f"Error: {str(e)}")
-            message.reply_text("An error occurred while processing the command.")
-
-    return app
-
-# Function to send the delayed messages
-def send_delayed_messages():
-    for chat_id, data in user_messages.items():
-        text_to_send = data["text"]
-        times = data["times"]
-        for _ in range(times):
-            app.send_message(chat_id, text_to_send)
-
-# Iterate over each set of API credentials and run the client
-for api_credentials in api_credentials_list:
-    app = create_client(api_credentials)
-    app.run()
-
-# Schedule the delayed message sender to run every minute
-schedule.every(1).minutes.do(send_delayed_messages)
-
-# Keep the script running
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+app.run()
