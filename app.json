@@ -1,6 +1,6 @@
 {
-    "name": "Rename",
-    "description": "Telegram File Renamer Bot",
+    "name": "spam",
+    "description": "shit developer",
     "logo": "https://graph.org//file/91b281b4fb4e5d233f325.jpg",
     "keywords": ["Rename", "Mongo DB"],
     "repository": "https://github.com/KIRITOAK4/spam",
@@ -18,8 +18,13 @@
         "SESSION_STRING": {
             "description": "put value None or Pyrogram string optional for 4gb support.",
             "value": "None",
-            "required": false
-        } 
+            "required": true
+        },
+        "OWNER_ID": {
+            "description": "user id",
+            "value": "",
+            "required": true
+        }
     },
     "buildpacks": [
         {
