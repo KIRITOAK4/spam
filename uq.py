@@ -4,10 +4,7 @@ from config import API_ID, API_HASH, SESSION_STRING, OWNER_ID
 
 app = Client("user_session", api_id=API_ID, api_hash=API_HASH, session_string=SESSION_STRING)
 
-async def is_owner(user_id):
-    return user_id == OWNER_ID
-
-@app.on_message(filters.command("delayspam", prefixes="/") & filters.create(is_owner))
+@app.on_message(filters.command("delayspam", prefixes="/") & filters.user(OWNER_ID))
 async def delayspam_command_handler(client, message):
     try:
         command_parts = message.text.split(" ", 3)
