@@ -1,4 +1,2 @@
-pytz
 pyrogram
 TgCrypto
-schedule
