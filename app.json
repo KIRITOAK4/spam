@@ -1,0 +1,29 @@
+{
+    "name": "Rename",
+    "description": "Telegram File Renamer Bot",
+    "logo": "https://graph.org//file/91b281b4fb4e5d233f325.jpg",
+    "keywords": ["Rename", "Mongo DB"],
+    "repository": "https://github.com/KIRITOAK4/spam",
+    "env": {
+        "API_ID": {
+            "description": "Your APP ID From my.telegram.org",
+            "value": "14712540",
+            "required": true
+        },
+        "API_HASH": {
+            "description": "Your API Hash From my.telegram.org",
+            "value": "e61b996dc037d969a4f8cf6411bb6165",
+            "required": true
+        },
+        "SESSION_STRING": {
+            "description": "put value None or Pyrogram string optional for 4gb support.",
+            "value": "None",
+            "required": false
+        } 
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ]
+}
