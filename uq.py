@@ -4,7 +4,7 @@ from config import API_ID, API_HASH, SESSION_STRING
 
 app = Client("user_session", api_id=API_ID, api_hash=API_HASH, session_string=SESSION_STRING)
 
-@app.on_message(filters.command("delayspam", prefixes="/"))
+@app.on_message(filters.command("despam", prefixes="/"))
 async def delayspam_command_handler(client, message):
     try:
         command_parts = message.text.split(" ", 3)
@@ -12,7 +12,7 @@ async def delayspam_command_handler(client, message):
         count = int(command_parts[2])
         msg = str(command_parts[3])
     except (IndexError, ValueError):
-        return await message.reply_text(f"**Usage :** /delayspam <delay time> <count> <msg>")
+        return await message.reply_text(f"**Usage :** /despam <time> <count> <msg>")
 
     try:
         for i in range(count):
