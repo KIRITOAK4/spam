@@ -12,7 +12,7 @@ async def delayspam_command_handler(client, message):
         count = int(command_parts[2])
         msg = str(command_parts[3])
     except (IndexError, ValueError):
-        return await message.reply_text(f"**Usage :** /despam <time> <count> <msg>")
+        return await message.reply_text(f"**Usage :** /despam time count msg")
 
     try:
         for i in range(count):
